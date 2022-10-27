@@ -19,7 +19,6 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('course/', include('course.urls'))
     path('student/', views.Student.as_view()),
     path('staff/', views.Staff.as_view()),
     path('login/', views.UserLogin.as_view()),

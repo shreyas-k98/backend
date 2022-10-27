@@ -25,3 +25,8 @@ class TestAppearedSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestAppeared
         fields = '__all__'
+
+class StudentCourseSerilizer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentCourse
+        fields = '__all__'
