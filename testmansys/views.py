@@ -16,7 +16,10 @@ class Student(APIView):
         data = request.data
         serializer = UserSerializer(data=data)
         if serializer.is_valid():
-            user = User.objects.create_user(username = data['username'], password = data['password'], email = data['email'])
+            user = User.objects.create_user(username = data['username'], password = data['password'])
+            user.email = data['email']
+            user.first_name = data['first_name']
+            user.last_name = data['last_name']
             user.is_staff = False
             user.save()
             return Response({
