@@ -24,10 +24,18 @@ SECRET_KEY = 'django-insecure-6^73!z&(*w*_jx)pn*&5-v*-h40p6#v=3n)a@_aqtu6q^_a-%(
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+CORS_ORIGIN_ALLOW_ALL = DEBUG
+# CSRF_COOKIE_NAME = "XSRF-TOKEN"
 
 ALLOWED_HOSTS = []
 
+CORS_ORIGIN_WHITELIST = (
+    'http://127.0.0.1:3000',
+    'http://192.168.2.34:3000',
+    'http://localhost:3000'
+)
 
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:3000', 'http://192.168.2.34:3000']
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,12 +45,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "corsheaders",
     'rest_framework',
     'course'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

@@ -1,5 +1,7 @@
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login, logout
 from rest_framework import authentication, permissions
@@ -45,7 +47,9 @@ class Staff(APIView):
                 "info": "Staff created successfully"
             })
 
+@method_decorator(csrf_exempt, name="dispatch")
 class UserLogin(APIView):
+    @csrf_exempt
     def post(self, request): # login user by username and password
         data = request.data
         user = authenticate(username = data['username'], password = data['password'])
@@ -61,6 +65,7 @@ class UserLogin(APIView):
                 "info": "Invalid Login Credentials or User Done Not Exists"
             })
 
+    
     def get(self, request): # get details of the current user
         user = request.user
         if user is not None:
@@ -72,10 +77,14 @@ class UserLogin(APIView):
                 "info": "no user logged in"
             })
     
-    
     def delete(self, request): # logout current user
         logout(request)
         return Response({
             "info": "Successfully logged out"
         })
 
+@api_view(['GET'])
+def get_curr_user_details(request): 
+    user = request.user
+    serializer = UserSerializer(user)
+    return Response(serializer.data)

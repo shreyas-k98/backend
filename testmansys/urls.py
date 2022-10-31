@@ -22,5 +22,6 @@ urlpatterns = [
     path('student/', views.Student.as_view()),
     path('staff/', views.Staff.as_view()),
     path('login/', views.UserLogin.as_view()),
-    path('course/', include('course.urls'))
+    path('course/', include('course.urls')),
+    path('user/', views.get_curr_user_details)
 ]
