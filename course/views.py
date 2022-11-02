@@ -50,16 +50,20 @@ class TetsAPI(APIView):
     def post(self, request):
         data = request.data
         user = request.user
-
+        print(data)
         if user is not None and user.is_staff == True:
-            course = Course.objects.filter(course_name = data['course_related'])
-            data['course_related'] = course[0].id
+            # course = Course.objects.filter(course_name = data['course_related'])
+            # data['course_related'] = course[0].id
             serializer = TestSerializer(data = data)
             if serializer.is_valid():
                 serializer.save()
                 return Response({
                     "status": "success",
                     "info": "test posted succcessfully"
+                })
+            else:
+                return Response({
+                    "info": "serialzer invalid"
                 })
         return Response({
                 "status": "failure",
@@ -78,10 +82,10 @@ class QuestionAPI(APIView):
     def post(self, request):
         data = request.data
         user = request.user
-
+        print(data)
         if user is not None and user.is_staff == True:
-            test = Test.objects.filter(test_name = data['test_related'])
-            data['test_related'] = test[0].id
+            # test = Test.objects.filter(test_name = data['test_related'])
+            # data['test_related'] = test[0].id
             serializer = QuestionSerializer(data = data)
             if serializer.is_valid():
                 serializer.save()
@@ -153,24 +157,36 @@ def student_enrolles_in_course(request):
 
 @api_view(['POST'])
 def student_appears_for_test(request):
-    data = request.data
-    user = request.user
+        data = request.data
+        user = request.user
 
-    if user.id is not None and user.is_staff == False:
-        data['given_by_student'] = user.id
-        data['start_time'] = datetime.datetime.now()
-        test = Test.objects.filter(test_name = data['test_related'])
-        data['test_related'] = test[0].id
-        data['end_time'] = datetime.datetime.now() + test[0].duration
-        serializer = TestAppearedSerializer(data = data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({
-                "status": "success",
-                "info": "student appeared for test"
-            })
-        else:
-            return Response({
-                "status": "failure",
-                "info": "invalid serializer"
-            })
+        if user.id is not None and user.is_staff == False:
+            data['given_by_student'] = user.id
+            data['start_time'] = datetime.datetime.now()
+            test = Test.objects.filter(test_name = data['test_related'])
+            data['test_related'] = test[0].id
+            data['end_time'] = datetime.datetime.now() + test[0].duration
+            serializer = TestAppearedSerializer(data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({
+                    "status": "success",
+                    "info": "student appeared for test"
+                })
+            else:
+                return Response({
+                    "status": "failure",
+                    "info": "invalid serializer"
+                })
+
+
+@api_view(['GET'])
+def get_enrolled_courses(request):
+    user = request.user
+    if user is not None and user.is_staff == False:
+        courses = StudentCourse.objects.filter(student = user.id)
+        serializer = StudentCourseSerilizer(courses, many=True)
+        for i in serializer.data:
+            course = Course.objects.get(id = i.get('course_enrolled'))
+            i['course_name'] = course.course_name
+        return Response(serializer.data)

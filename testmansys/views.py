@@ -28,7 +28,18 @@ class Student(APIView):
                 "status": "success",
                 "info": "Student created successfully"
             })
-            
+    def put(self, request):
+        userdata = request.data
+        user = request.user
+        user.first_name = userdata['first_name']
+        user.last_name = userdata['last_name']
+        user.email = userdata['email']
+        user.save()
+        return Response({
+            "status": "success"
+        })
+
+
 class Staff(APIView):
     def get(self, request):
         staff = User.objects.filter(is_staff = True)
