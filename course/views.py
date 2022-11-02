@@ -106,8 +106,8 @@ def student_answering_question(request):
 
     if user is not None and user.is_staff == False:
         data['given_by_student'] = user.id
-        question = Question.objects.filter(question = data['question_related'])
-        test = Test.objects.filter(test_name = question[0].test_related)
+        # question = Question.objects.filter(question = data['question_related'])
+        # test = Test.objects.filter(test_name = question[0].test_related)
         data['test_related'] = test[0].id
         data['question_related'] = question[0].id
         serializer = SelectedAnswerSerializer(data = data)
